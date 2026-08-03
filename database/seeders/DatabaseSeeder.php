@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Database\Seeders\DiscQuestionSeeder;
+use Database\Seeders\DiscProfileSeeder;
+use Database\Seeders\DiscStatementInterpretationSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,6 +22,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             DiscQuestionSeeder::class,
+            DiscProfileSeeder::class,
+            DiscStatementInterpretationSeeder::class,
         ]);
     }
 }

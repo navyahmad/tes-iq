@@ -25,6 +25,9 @@ Route::prefix('disc')
         Route::post('/start', [DiscTestController::class, 'start'])
             ->name('start');
 
+        Route::get('/instruction/{discTest}', [DiscTestController::class, 'instruction'])
+            ->name('instruction');
+
         Route::get('/test/{discTest}', [DiscTestController::class, 'test'])
             ->name('test');
 

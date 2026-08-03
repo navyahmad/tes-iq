@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\DiscAnswer;
 
+use App\Models\DiscStatementInterpretation;
+
+
+
 class DiscQuestion extends Model
 {
     protected $fillable = [
@@ -25,4 +29,12 @@ class DiscQuestion extends Model
     {
         return $this->hasMany(DiscAnswer::class);
     }
+
+    public function interpretations(): HasMany
+{
+    return $this->hasMany(
+        DiscStatementInterpretation::class,
+        'question_id'
+    );
+}
 }
