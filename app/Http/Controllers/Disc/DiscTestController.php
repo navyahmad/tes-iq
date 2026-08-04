@@ -13,11 +13,16 @@ use App\Models\DiscAnswer;
 use Illuminate\Support\Facades\DB;
 use App\Models\DiscGraphConversion;
 use App\Models\DiscProfile;
+use App\Services\DiscSummaryService;
 
 
 
 class DiscTestController extends Controller
 {
+    public function __construct(
+        private DiscSummaryService $discSummaryService
+    ) {}
+
     /**
      * Form Biodata
      */
@@ -225,16 +230,16 @@ public function submit(Request $request, DiscTest $discTest)
     public function result(DiscTest $discTest)
     {
         $discTest->load([
-        'profile',
-        'answers.question.interpretations',
-    ]);
+            'profile',
+            'answers.question.interpretations',
+        ]);
+
+        $personalSummary = $this->discSummaryService->generate($discTest);
 
         return Inertia::render('DISC/Result', [
-
             'discTest' => $discTest,
-
             'profile' => $discTest->profile,
-
+            'personalSummary' => $personalSummary,
         ]);
     }
     

@@ -40,7 +40,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     return null;
 };
 
-export default function Result({ discTest, profile }) {
+export default function Result({ discTest, profile, personalSummary }) {
     const chartData = [
         {
             subject: "D",
@@ -260,8 +260,54 @@ export default function Result({ discTest, profile }) {
                             </div>
                         </div>
 
-                        {/* Summary Profile Block (Profil Umum) */}
-                        {profile && (
+                        {/* Ringkasan Profil Personal — disusun dari jawaban dominan peserta */}
+                        {personalSummary?.paragraphs?.length > 0 && (
+                            <div className="p-5 sm:p-6 rounded-xl bg-gradient-to-r from-blue-950/40 via-indigo-950/30 to-zinc-950/60 border border-blue-500/30 space-y-4 relative overflow-hidden">
+                                <div className="flex items-center gap-2 text-xs font-mono text-blue-400 uppercase tracking-wider">
+                                    <Sparkles className="w-4 h-4" />
+                                    <span>Ringkasan Profil Personal</span>
+                                </div>
+
+                                <h3 className="text-xl sm:text-2xl font-bold text-white">
+                                    {personalSummary.title}
+                                </h3>
+
+                                <div className="space-y-4">
+                                    {personalSummary.paragraphs.map((paragraph, idx) => (
+                                        <p
+                                            key={idx}
+                                            className="text-xs sm:text-sm text-zinc-300 leading-relaxed"
+                                        >
+                                            {paragraph}
+                                        </p>
+                                    ))}
+                                </div>
+
+                                {personalSummary.highlighted_statements?.length > 0 && (
+                                    <div className="pt-4 border-t border-blue-500/20 space-y-2">
+                                        <p className="text-[10px] font-mono text-blue-400 uppercase tracking-widest">
+                                            Karakteristik Utama Yang Anda Pilih
+                                        </p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {personalSummary.highlighted_statements.map((item, idx) => (
+                                                <span
+                                                    key={idx}
+                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-950/60 border border-zinc-700/80 text-xs text-zinc-200"
+                                                >
+                                                    <span className="font-mono font-bold text-blue-400">
+                                                        {item.dimension}
+                                                    </span>
+                                                    <span>{item.statement}</span>
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Fallback: profil seeder jika ringkasan personal belum tersedia */}
+                        {!personalSummary?.paragraphs?.length && profile && (
                             <div className="p-5 sm:p-6 rounded-xl bg-gradient-to-r from-blue-950/40 via-indigo-950/30 to-zinc-950/60 border border-blue-500/30 space-y-3 relative overflow-hidden">
                                 <div className="flex items-center gap-2 text-xs font-mono text-blue-400 uppercase tracking-wider">
                                     <Sparkles className="w-4 h-4" />
@@ -275,58 +321,6 @@ export default function Result({ discTest, profile }) {
                                 </p>
                             </div>
                         )}
-
-                        {/* ========================================================================= */}
-                        {/* BAGIAN 3: INSIGHT PERSONAL (Berdasarkan 24 Pernyataan MOST Pilihan Peserta) */}
-                        {/* ========================================================================= */}
-                        <div className="p-5 sm:p-6 rounded-xl bg-zinc-950/60 border border-zinc-800/80 space-y-4">
-                            <div className="border-b border-zinc-800/80 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                                <div>
-                                    <span className="text-[10px] font-mono text-blue-400 uppercase tracking-widest block mb-0.5">
-                                        Interpretasi Spesifik Jawaban
-                                    </span>
-                                    <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-                                        <Sparkles className="w-5 h-5 text-amber-400" />
-                                        <span>Karakteristik Yang Paling Menggambarkan Anda</span>
-                                    </h3>
-                                </div>
-                                <span className="self-start sm:self-auto px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-mono">
-                                    {discTest?.answers?.length || 0} Poin Insight Personal
-                                </span>
-                            </div>
-
-                            <p className="text-xs text-zinc-400 leading-relaxed">
-                                Berikut adalah gambaran kecenderungan perilaku spesifik yang diambil secara langsung berdasarkan pernyataan pilihan utama (MOST) Anda selama tes:
-                            </p>
-
-                            <div className="grid grid-cols-1 gap-3 pt-1">
-                                {discTest?.answers?.map((ans, idx) => {
-                                    const most = ans.most_interpretation;
-                                    if (!most) return null;
-
-                                    return (
-                                        <div
-                                            key={idx}
-                                            className="p-4 rounded-xl bg-zinc-900/80 border border-zinc-800/80 space-y-1.5 hover:border-zinc-700/80 transition-all"
-                                        >
-                                            <div className="flex items-start gap-3">
-                                                <span className="shrink-0 px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/10 border border-blue-500/30 text-blue-400 font-bold mt-0.5">
-                                                    #{idx + 1}
-                                                </span>
-                                                <div className="space-y-1 flex-1">
-                                                    <h4 className="text-xs sm:text-sm font-bold text-white tracking-wide">
-                                                        "{most.statement}"
-                                                    </h4>
-                                                    <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                                                        {most.most_description}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
 
                         {/* Detailed Metrics Grid (Strength, Weakness, Communication, Leadership, dll) */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
